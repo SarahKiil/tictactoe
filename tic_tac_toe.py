@@ -1,4 +1,5 @@
 import math
+import random
 
 BLUE = "\033[34m"
 RED = "\033[31m"
@@ -83,7 +84,8 @@ def main():
     else:
         print(f"You are {RED}O{RESET} and AI is {BLUE}X{RESET}")
 
-    turn = "player" if player_symbol == "X" else "ai"
+    # Tilfældig start: enten player eller ai starter uanset symbol
+    turn = random.choice(["player", "ai"])
     print(f"{turn.capitalize()} will start the game!")
 
     while True:
