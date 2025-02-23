@@ -133,7 +133,7 @@ def play_game():
                     print("Invalid move. Please try again.")
                     continue
                 board[move] = player_symbol
-                # Gem træk: kopier board for at bevare tilstanden
+
                 moves.append(("Player", move, board.copy()))
                 turn = "ai"
             except ValueError:
@@ -162,7 +162,7 @@ def play_game():
     print(f"Wins: {wins} | Losses: {losses} | Draws: {draws}")
     print("------------------\n")
 
-    # Spørg om spilleren vil se en replay af spillet
+
     replay = input("Do you want to see a replay of the game? (y/n): ").lower()
     if replay == 'y':
         replay_game(moves)
