@@ -1,5 +1,6 @@
 import math
 import random
+import time
 
 BLUE = "\033[34m"
 RED = "\033[31m"
@@ -87,10 +88,23 @@ def ai_move(board, ai_player, human_player):
             best_move = move
     return best_move
 
+def replay_game(moves):
+    # Genskab brættet og afspil hvert træk med en lille pause
+    board = [i + 1 for i in range(9)]
+    print("\nReplaying game:")
+    for move_entry in moves:
+        player, move, board_state = move_entry
+        board[move] = board_state[move]  # opdater brættet med trækets symbol
+        print_board(board)
+        time.sleep(1)  # Pause 1 sekund mellem træk
+        print("\n")
+    print("Replay finished.\n")
+
 def play_game():
     global wins, losses, draws
 
     board = [i + 1 for i in range(9)]
+    moves = []  # Liste til at gemme spillets bevægelser
     player_symbol = ""
     while player_symbol not in ["X", "O"]:
         player_symbol = input("Choose your symbol (X or O): ").upper()
@@ -119,6 +133,8 @@ def play_game():
                     print("Invalid move. Please try again.")
                     continue
                 board[move] = player_symbol
+                # Gem træk: kopier board for at bevare tilstanden
+                moves.append(("Player", move, board.copy()))
                 turn = "ai"
             except ValueError:
                 print("Invalid input. Please enter a number between 1 and 9.")
@@ -126,6 +142,7 @@ def play_game():
             print("AI is making a move...")
             move = ai_move(board, ai_symbol, player_symbol)
             board[move] = ai_symbol
+            moves.append(("AI", move, board.copy()))
             turn = "player"
 
     print_board(board)
@@ -144,6 +161,11 @@ def play_game():
     print("\n--- Statistics ---")
     print(f"Wins: {wins} | Losses: {losses} | Draws: {draws}")
     print("------------------\n")
+
+    # Spørg om spilleren vil se en replay af spillet
+    replay = input("Do you want to see a replay of the game? (y/n): ").lower()
+    if replay == 'y':
+        replay_game(moves)
 
 def main():
     while True:
