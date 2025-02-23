@@ -34,7 +34,7 @@ def check_winner(board):
 def available_moves(board):
     return [i for i in range(9) if isinstance(board[i], int)]
 
-def minimax(board, depth, is_maximizing, ai_player, human_player):
+def minimax(board, depth, is_maximizing, ai_player, human_player, alpha=-math.inf, beta=math.inf):
     winner = check_winner(board)
     if winner == ai_player:
         return 10 - depth
@@ -47,17 +47,23 @@ def minimax(board, depth, is_maximizing, ai_player, human_player):
         best_score = -math.inf
         for move in available_moves(board):
             board[move] = ai_player
-            score = minimax(board, depth + 1, False, ai_player, human_player)
+            score = minimax(board, depth + 1, False, ai_player, human_player, alpha, beta)
             board[move] = move + 1  # reset move
             best_score = max(score, best_score)
+            alpha = max(alpha, best_score)
+            if beta <= alpha:
+                break  # beta cut-off
         return best_score
     else:
         best_score = math.inf
         for move in available_moves(board):
             board[move] = human_player
-            score = minimax(board, depth + 1, True, ai_player, human_player)
+            score = minimax(board, depth + 1, True, ai_player, human_player, alpha, beta)
             board[move] = move + 1  # reset move
             best_score = min(score, best_score)
+            beta = min(beta, best_score)
+            if beta <= alpha:
+                break  # alpha cut-off
         return best_score
 
 def ai_move(board, ai_player, human_player):
@@ -65,7 +71,7 @@ def ai_move(board, ai_player, human_player):
     best_move = None
     for move in available_moves(board):
         board[move] = ai_player
-        score = minimax(board, 0, False, ai_player, human_player)
+        score = minimax(board, 0, False, ai_player, human_player, -math.inf, math.inf)
         board[move] = move + 1  # reset move
         if score > best_score:
             best_score = score
