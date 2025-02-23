@@ -3,6 +3,8 @@ import random
 
 BLUE = "\033[34m"
 RED = "\033[31m"
+BLACK = "\033[30m"
+PINK = "\033[95m"
 RESET = "\033[0m"
 
 def print_board(board):
@@ -15,10 +17,13 @@ def print_board(board):
             elif cell == "O":
                 row.append(f"{RED}O{RESET}")
             else:
-                row.append(str(cell))
-        print(" | ".join(row))
+                # Udskriv ledige celler med tal i sort
+                row.append(f"{BLACK}{cell}{RESET}")
+        # Saml rækken med pink " | " som separator for at fremhæve gitterlinjerne
+        print(f"{PINK} | {RESET}".join(row))
         if i < 2:
-            print("--+---+--")
+            # Udskriv gitterlinje i pink
+            print(f"{PINK}--+---+--{RESET}")
 
 def check_winner(board):
     winning_positions = [
