@@ -72,7 +72,7 @@ def ai_move(board, ai_player, human_player):
             best_move = move
     return best_move
 
-def main():
+def play_game():
     board = [i + 1 for i in range(9)]
     player_symbol = ""
     while player_symbol not in ["X", "O"]:
@@ -84,10 +84,11 @@ def main():
     else:
         print(f"You are {RED}O{RESET} and AI is {BLUE}X{RESET}")
 
-    # Tilfældig start: enten player eller ai starter uanset symbol
+    # Tilfældig start: enten player eller ai starter
     turn = random.choice(["player", "ai"])
     print(f"{turn.capitalize()} will start the game!")
 
+    winner = None
     while True:
         print_board(board)
         winner = check_winner(board)
@@ -118,6 +119,14 @@ def main():
             print("AI wins. Better luck next time!")
     else:
         print("It's a tie!")
+
+def main():
+    while True:
+        play_game()
+        play_again = input("Do you want to play again? (y/n): ").lower()
+        if play_again != 'y':
+            print("Thank you for playing!")
+            break
 
 if __name__ == "__main__":
     main()
