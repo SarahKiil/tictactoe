@@ -7,6 +7,11 @@ BLACK = "\033[30m"
 PINK = "\033[95m"
 RESET = "\033[0m"
 
+# Globale statistikvariabler
+wins = 0
+losses = 0
+draws = 0
+
 def print_board(board):
     for i in range(3):
         row = []
@@ -17,19 +22,18 @@ def print_board(board):
             elif cell == "O":
                 row.append(f"{RED}O{RESET}")
             else:
-                # Udskriv ledige celler med tal i sort
+
                 row.append(f"{BLACK}{cell}{RESET}")
-        # Saml rækken med pink " | " som separator for at fremhæve gitterlinjerne
+
         print(f"{PINK} | {RESET}".join(row))
         if i < 2:
-            # Udskriv gitterlinje i pink
             print(f"{PINK}--+---+--{RESET}")
 
 def check_winner(board):
     winning_positions = [
-        (0, 1, 2), (3, 4, 5), (6, 7, 8),  # rows
-        (0, 3, 6), (1, 4, 7), (2, 5, 8),  # columns
-        (0, 4, 8), (2, 4, 6)              # diagonals
+        (0, 1, 2), (3, 4, 5), (6, 7, 8),  # rækker
+        (0, 3, 6), (1, 4, 7), (2, 5, 8),  # kolonner
+        (0, 4, 8), (2, 4, 6)              # diagonaler
     ]
     for a, b, c in winning_positions:
         if board[a] == board[b] == board[c] and board[a] in ["X", "O"]:
@@ -53,7 +57,7 @@ def minimax(board, depth, is_maximizing, ai_player, human_player, alpha=-math.in
         for move in available_moves(board):
             board[move] = ai_player
             score = minimax(board, depth + 1, False, ai_player, human_player, alpha, beta)
-            board[move] = move + 1  # reset move
+            board[move] = move + 1  # nulstil træk
             best_score = max(score, best_score)
             alpha = max(alpha, best_score)
             if beta <= alpha:
@@ -64,7 +68,7 @@ def minimax(board, depth, is_maximizing, ai_player, human_player, alpha=-math.in
         for move in available_moves(board):
             board[move] = human_player
             score = minimax(board, depth + 1, True, ai_player, human_player, alpha, beta)
-            board[move] = move + 1  # reset move
+            board[move] = move + 1  # nulstil træk
             best_score = min(score, best_score)
             beta = min(beta, best_score)
             if beta <= alpha:
@@ -77,13 +81,15 @@ def ai_move(board, ai_player, human_player):
     for move in available_moves(board):
         board[move] = ai_player
         score = minimax(board, 0, False, ai_player, human_player, -math.inf, math.inf)
-        board[move] = move + 1  # reset move
+        board[move] = move + 1  # nulstil træk
         if score > best_score:
             best_score = score
             best_move = move
     return best_move
 
 def play_game():
+    global wins, losses, draws
+
     board = [i + 1 for i in range(9)]
     player_symbol = ""
     while player_symbol not in ["X", "O"]:
@@ -126,10 +132,18 @@ def play_game():
     if winner:
         if winner == player_symbol:
             print("Congratulations, you win!")
+            wins += 1
         else:
             print("AI wins. Better luck next time!")
+            losses += 1
     else:
         print("It's a tie!")
+        draws += 1
+
+    # Udskriv statistik
+    print("\n--- Statistics ---")
+    print(f"Wins: {wins} | Losses: {losses} | Draws: {draws}")
+    print("------------------\n")
 
 def main():
     while True:
